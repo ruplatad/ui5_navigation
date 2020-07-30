@@ -43,11 +43,19 @@ sap.ui.define([
 
             // sorting via URL hash
             this._applySorter(oQueryParameter.sortField, oQueryParameter.sortDescending);
+
+            // show dialog via URL hash
+            if (oQueryParameter.showDialog) {
+                this._oVSD.open();
+            }
         },
 
 
         onSortButtonPressed : function () {
-            this._oVSD.open();
+            //this._oVSD.open();
+            var oRouter = this.getRouter();
+            this._oRouterArgs["?query"].showDialog = 1;
+            oRouter.navTo("employeeOverview", this._oRouterArgs);
         },
 
         onSearchEmployeesTable : function (oEvent) {
@@ -157,7 +165,19 @@ sap.ui.define([
             // Note: no input validation is implemented here
             this._oVSD.setSelectedSortItem(sSortField);
             this._oVSD.setSortDescending(bSortDescending);
-        }
+        },
+        
+        onItemPressed: function (oEvent) {
+        var oItem, oCtx, oRouter;
+        oItem = oEvent.getParameter("listItem");
+        oCtx = oItem.getBindingContext();
+        this.getRouter().navTo("employeeResume",{
+            employeeId : oCtx.getProperty("EmployeeID"),
+            "?query": {
+                tab: "Info"
+            }
+        });
+    }
 
     });
 
